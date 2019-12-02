@@ -13,8 +13,11 @@
     "discord.js": "^11.5.1",
     "easyvk": "^2.5.11",
     "fb": "^2.0.0",
+    "mysql2": "^2.0.1",
     "node-tamtam-botapi": "^0.1.10-b6",
     "node-telegram-bot-api": "^0.40.0",
+    "socks5-https-client": "^1.2.1",
+    "uws": "^100.0.1",
     "viber-bot": "^1.0.14"
   }
 }
