@@ -2,11 +2,11 @@ class Module {
     constructor(config) {
     }
 
-    SetMessageCallBack(cb) {
+    sendMessage(message) {
 
     }
 
-    sendMessage(message) {
+    getChat(config) {
 
     }
 }

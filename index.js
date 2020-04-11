@@ -5,5 +5,9 @@ const {DS} = require("./core/modules/DS");
 const configs = require("./configs");
 
 core = new Core();
-core.addTwoWayModuleBridge(new VK(configs.VKTest),new DS(configs.DSCommands));
+let DSBot = new DS(configs.DSBot);
+let VKBot = new VK(configs.VKBot);
+core.addTwoWayBridge(
+    DSBot.getChat(configs.DSCommands),
+    VKBot.getChat(configs.VKBotTest));
 console.info("started!");

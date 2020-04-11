@@ -1,6 +1,6 @@
 const request = require("request");
 const {ProxyService} = require("./ProxyService");
-const proxyListService = 5;
+const proxyListService = 4;
 
 class Proxy {
     static lastProxy = "";

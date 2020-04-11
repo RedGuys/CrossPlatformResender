@@ -1,15 +1,17 @@
 const {Module} = require("./classes/Module");
+const {Chat} = require("./classes/Chat");
 const TGBotLib = require('node-telegram-bot-api');
 const Proxy = require("../Proxy");
 
 class TG extends Module {
-    messageCallBack;
     bot;
     config;
+    chats;
 
     constructor(config) {
         super(config);
         this.config = config;
+        this.chats = {};
         let proxy = Proxy.getProxy((ip) =>{
             this.bot = new TGBotLib(config.token, {polling: true, request: {proxy: "http://" + ip}});
             console.log("TG inited");
@@ -17,10 +19,8 @@ class TG extends Module {
                 if (msg.text === "/getGrpId") {
                     this.bot.sendMessage(msg.chat.id, msg.chat.id.toString());
                 } else {
-                    if (msg.chat.id === config.group_id) {
-                        if (this.messageCallBack) {
-                            this.messageCallBack(msg.text, {name: msg.from.first_name + " " + msg.from.last_name});
-                        }
+                    if (this.chats.hasOwnProperty(msg.chat.id)) {
+                        this.chats[msg.chat.id].onMessage(msg);
                     }
                 }
             });
@@ -30,14 +30,43 @@ class TG extends Module {
         });
     }
 
-    SetMessageCallBack(cb) {
-        super.SetMessageCallBack(cb);
-        this.messageCallBack = cb;
+    sendMessage(message, to) {
+        super.sendMessage(message);
+        this.bot.sendMessage(to, message);
+    }
+
+    getChat(config) {
+        super.getChat(config);
+        config["Bot"] = this;
+        let chat = new TGChat(config);
+        this.chats[config.group_id] = chat;
+        return chat;
+    }
+}
+
+class TGChat extends Chat {
+    config;
+    constructor(config) {
+        super(config);
+        this.config = config;
     }
 
     sendMessage(message) {
         super.sendMessage(message);
-        this.bot.sendMessage(this.config.group_id, message);
+        this.config.Bot.sendMessage(message,this.config.group_id);
+    }
+
+    setMessageCallBack(cb) {
+        super.setMessageCallBack(cb);
+        this.cb = cb;
+    }
+
+    onMessage(message) {
+        super.onMessage(message);
+        if(this.cb) {
+            this.cb(message.text, {name: message.from.first_name + " " + message.from.last_name});
+        }
     }
 }
+
 module.exports.TG = TG;
