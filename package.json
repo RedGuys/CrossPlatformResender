@@ -1,0 +1,24 @@
+{
+  "name": "cross-platform-bot",
+  "version": "0.0.1",
+  "description": "bot to cross the social network communication",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "RedGuyGames",
+  "license": "ISC",
+  "dependencies": {
+    "fb": "^2.0.0",
+    "mysql2": "^2.0.1",
+    "node-tamtam-botapi": "^0.1.10-b6",
+    "node-telegram-bot-api": "^0.40.0",
+    "node-vk-bot-api": "^3.3.3",
+    "request": "latest",
+    "socks5-https-client": "^1.2.1",
+    "uws": "^100.0.1",
+    "viber-bot": "^1.0.14",
+    "discord.js": "latest"
+  }
+}
