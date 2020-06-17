@@ -12,21 +12,20 @@ class TG extends Module {
         super(config);
         this.config = config;
         this.chats = {};
-        let proxy = Proxy.getProxy((ip) =>{
-            this.bot = new TGBotLib(config.token, {polling: true, request: {proxy: "http://" + ip}});
-            console.log("TG inited");
-            this.bot.on('message', (msg) => {
-                if (msg.text === "/getGrpId") {
-                    this.bot.sendMessage(msg.chat.id, msg.chat.id.toString());
-                } else {
-                    if (this.chats.hasOwnProperty(msg.chat.id)) {
-                        this.chats[msg.chat.id].onMessage(msg);
-                    }
+        this.bot = new TGBotLib(config.token, config.options);
+        console.log("TG inited");
+        this.bot.on('message', (msg) => {
+            if (msg.text === "/getGrpId") {
+                this.bot.sendMessage(msg.chat.id, msg.chat.id.toString());
+            } else {
+                if (this.chats.hasOwnProperty(msg.chat.id)) {
+                    this.chats[msg.chat.id].onMessage(msg);
                 }
-            });
-            this.bot.on('polling_error', (error) => {
-                console.log(error);
-            });
+            }
+        });
+
+        this.bot.on('polling_error', (error) => {
+            console.log(error);
         });
     }
 
@@ -64,7 +63,11 @@ class TGChat extends Chat {
     onMessage(message) {
         super.onMessage(message);
         if(this.cb) {
-            this.cb(message.text, {name: message.from.first_name + " " + message.from.last_name});
+            if(message.from.last_name !== undefined) {
+                this.cb(message.text, {name: message.from.first_name + " " + message.from.last_name});
+            } else {
+                this.cb(message.text, {name: message.from.first_name});
+            }
         }
     }
 }
