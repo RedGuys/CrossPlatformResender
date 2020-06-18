@@ -6,7 +6,7 @@ class Module {
 
     }
 
-    sendMessageWithAttachment(message, attachment, to) {
+    sendMessageWithPhotos(message, attachment, to) {
 
     }
 

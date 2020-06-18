@@ -7,7 +7,7 @@ class Chat {
 
     }
 
-    sendMessageWithAttachment(message,attachment) {
+    sendMessageWithPhotos(message,attachment) {
 
     }
 
@@ -15,7 +15,7 @@ class Chat {
 
     }
 
-    setAttachmentMessageCallBack(mediaCb) {
+    setPhotosMessageCallBack(photosCb) {
 
     }
 
@@ -23,7 +23,7 @@ class Chat {
 
     }
 
-    onAttachment(message) {
+    onPhotos(message) {
 
     }
 }

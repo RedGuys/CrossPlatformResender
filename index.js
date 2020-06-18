@@ -5,11 +5,11 @@ const {VK} = require("./core/modules/VK");
 const configs = require("./configs");
 
 core = new Core();
-let DSBot = new DS(configs.DSBot);
+//et DSBot = new DS(configs.DSBot);
 let TGBot = new TG(configs.TGBot);
-//let VKBot = new VK(configs.VKBot);
+let VKBot = new VK(configs.VKBot);
 core.addTwoWayBridge(
     TGBot.getChat(configs.TGBotTest),
-    DSBot.getChat(configs.DSHren)
+    VKBot.getChat(configs.VKBotTest)
 );
 console.info("started!");

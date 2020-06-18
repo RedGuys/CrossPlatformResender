@@ -17,11 +17,11 @@ class Core {
                 console.log("["+senderInfo.name+"] " + message);
             chatOne.sendMessage("[" + senderInfo.name + "] " + message);
         });
-        chatOne.setAttachmentMessageCallBack(function (message, senderInfo, attachment) {
-            chatTwo.sendMessageWithAttachment("[" + senderInfo.name + "] " + message,attachment);
+        chatOne.setPhotosMessageCallBack(function (message, senderInfo, attachment) {
+            chatTwo.sendMessageWithPhotos("[" + senderInfo.name + "] " + message,attachment);
         });
-        chatTwo.setAttachmentMessageCallBack(function (message, senderInfo, attachment) {
-            chatOne.sendMessageWithAttachment("[" + senderInfo.name + "] " + message,attachment);
+        chatTwo.setPhotosMessageCallBack(function (message, senderInfo, attachment) {
+            chatOne.sendMessageWithPhotos("[" + senderInfo.name + "] " + message,attachment);
         });
     }
 

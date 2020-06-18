@@ -45,9 +45,9 @@ class DS extends Module {
     sendMessage(message, to) {
         super.sendMessage(message);
         this.client.channels.fetch(to)
-            .then((channel) => {
-                channel.send(message);
-            });
+            .then(channel =>
+                channel.send(message)
+            );
     }
 
     sendMessageWithPhotos(message, attachment, to) {
@@ -92,9 +92,9 @@ class DSChat extends Chat {
         this.cb = cb;
     }
 
-    setPhotosMessageCallBack(mediaCb) {
-        super.setPhotosMessageCallBack(mediaCb);
-        this.mediaCb = mediaCb;
+    setPhotosMessageCallBack(photosCb) {
+        super.setPhotosMessageCallBack(photosCb);
+        this.mediaCb = photosCb;
     }
 
     onMessage(message) {
@@ -106,11 +106,11 @@ class DSChat extends Chat {
 
     onPhotos(message) {
 
-        function downloadFile(urls,files,folder,message,mediaCb) {
+        function downloadFile(urls,files,folder,message,photosCb) {
             let uri = urls.shift();
             if(uri === undefined) {
-                let text = message.content ? "" : message.content;
-                mediaCb(text,{name:message.author.username},files);
+                let text = message.content ? message.content : "";
+                photosCb(text,{name:message.author.username},files);
             } else {
                 let pathToFile = path.join(folder,decodeURIComponent(path.basename(url.parse(uri).pathname)));
                 let file = fs.createWriteStream(pathToFile);
@@ -119,21 +119,21 @@ class DSChat extends Chat {
                     response.on("end", () => {
                         let object = {"file":pathToFile,"url":uri};
                         files.push(object);
-                        downloadFile(urls,files,folder,message,mediaCb);
+                        downloadFile(urls,files,folder,message,photosCb);
                     });
                 });
             }
         }
 
         super.onPhotos(message);
-        if(this.mediaCb) {
+        if(this.photosCb) {
             let urls = [];
             let files = [];
             let folder = temp.mkdirSync("CrossPlatform-DS");
             for (let attachment of message.attachments) {
                 urls.push(attachment[1].url);
             }
-            downloadFile(urls,files,folder,message,this.mediaCb);
+            downloadFile(urls,files,folder,message,this.photosCb);
         }
     }
 }
