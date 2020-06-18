@@ -7,11 +7,23 @@ class Chat {
 
     }
 
+    sendMessageWithAttachment(message,attachment) {
+
+    }
+
     setMessageCallBack(cb) {
 
     }
 
+    setAttachmentMessageCallBack(mediaCb) {
+
+    }
+
     onMessage(message) {
+
+    }
+
+    onAttachment(message) {
 
     }
 }

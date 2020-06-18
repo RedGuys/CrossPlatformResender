@@ -7,9 +7,9 @@ const configs = require("./configs");
 core = new Core();
 let DSBot = new DS(configs.DSBot);
 let TGBot = new TG(configs.TGBot);
-let VKBot = new VK(configs.VKBot);
-core.addThreeWayBridge(
-    DSBot.getChat(configs.DSCommands),
+//let VKBot = new VK(configs.VKBot);
+core.addTwoWayBridge(
     TGBot.getChat(configs.TGBotTest),
-    VKBot.getChat(configs.VKBotTest));
+    DSBot.getChat(configs.DSHren)
+);
 console.info("started!");

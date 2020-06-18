@@ -1,6 +1,8 @@
 const {Module} = require("./classes/Module");
 const {Chat} = require("./classes/Chat");
-const TGBotLib = require('node-telegram-bot-api');
+const { Telegraf } = require('telegraf')
+const TGBotLib = Telegraf;
+const fs = require("fs");
 const Proxy = require("../Proxy");
 
 class TG extends Module {
@@ -12,25 +14,30 @@ class TG extends Module {
         super(config);
         this.config = config;
         this.chats = {};
-        this.bot = new TGBotLib(config.token, config.options);
-        console.log("TG inited");
-        this.bot.on('message', (msg) => {
-            if (msg.text === "/getGrpId") {
-                this.bot.sendMessage(msg.chat.id, msg.chat.id.toString());
+        this.bot = new TGBotLib(config.token, {telegram:config.options});
+        this.bot.launch();
+        this.bot.on('text', (msg) => {
+            if (msg.update.message.text === "/getGrpId") {
+                this.bot.sendMessage(msg.update.message.chat.id, msg.update.message.chat.id.toString());
             } else {
-                if (this.chats.hasOwnProperty(msg.chat.id)) {
-                    this.chats[msg.chat.id].onMessage(msg);
+                if (this.chats.hasOwnProperty(msg.update.message.chat.id)) {
+                    this.chats[msg.update.message.chat.id].onMessage(msg);
                 }
             }
-        });
-
-        this.bot.on('polling_error', (error) => {
-            console.log(error);
         });
     }
 
     sendMessage(message, to) {
         super.sendMessage(message);
+        this.bot.sendMessage(to, message);
+    }
+
+    sendMessageWithPhotos(message, attachment, to) {
+        super.sendMessageWithPhotos(message, attachment, to);
+        for (let attachmentItem of attachment) {
+            const buffer = fs.readFileSync(attachmentItem.file);
+            this.bot.sendPhoto(to, buffer);
+        }
         this.bot.sendMessage(to, message);
     }
 
@@ -55,6 +62,11 @@ class TGChat extends Chat {
         this.config.Bot.sendMessage(message,this.config.group_id);
     }
 
+    sendMessageWithPhotos(message, attachment) {
+        super.sendMessageWithPhotos(message, attachment);
+        this.config.Bot.sendMessageWithPhotos(message,attachment,this.config.group_id);
+    }
+
     setMessageCallBack(cb) {
         super.setMessageCallBack(cb);
         this.cb = cb;
@@ -62,11 +74,12 @@ class TGChat extends Chat {
 
     onMessage(message) {
         super.onMessage(message);
+        message.telegram.sendCopy(message.update.message.chat.id,message.update.message);
         if(this.cb) {
             if(message.from.last_name !== undefined) {
-                this.cb(message.text, {name: message.from.first_name + " " + message.from.last_name});
+                this.cb(message.update.message.text, {name: message.from.first_name + " " + message.from.last_name});
             } else {
-                this.cb(message.text, {name: message.from.first_name});
+                this.cb(message.update.message.text, {name: message.from.first_name});
             }
         }
     }

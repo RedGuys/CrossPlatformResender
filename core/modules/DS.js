@@ -1,5 +1,10 @@
 const {Module} = require("./classes/Module");
 const {Chat} = require("./classes/Chat");
+const https = require('https');
+const fs = require('fs');
+const temp = require('temp');
+const path = require("path");
+const url = require("url");
 const Discord = require("discord.js");
 
 class DS extends Module {
@@ -19,7 +24,11 @@ class DS extends Module {
                 message.reply(message.channel.id);
             } else {
                 if (this.chats.hasOwnProperty(message.channel.id)) {
-                    this.chats[message.channel.id].onMessage(message);
+                    if(message.attachments.size === 0) {
+                        this.chats[message.channel.id].onMessage(message);
+                    } else {
+                        this.chats[message.channel.id].onPhotos(message);
+                    }
                 }
             }
         });
@@ -35,13 +44,33 @@ class DS extends Module {
 
     sendMessage(message, to) {
         super.sendMessage(message);
-        const channel = this.client.channels.get(to);
-        channel.send(message);
+        this.client.channels.fetch(to)
+            .then((channel) => {
+                channel.send(message);
+            });
     }
+
+    sendMessageWithPhotos(message, attachment, to) {
+        super.sendMessageWithPhotos(message, attachment, to);
+        this.client.channels.fetch(to)
+            .then((channel) => {
+                let files = [];
+                for (let attachmentItem of attachment) {
+                    let item = {};
+                    item.attachment = attachmentItem.file;
+                    item.name = path.basename(attachmentItem.file);
+                    files.push(item);
+                }
+
+                channel.send(message, {"files":files});
+            });
+    }
+
 }
 
 class DSChat extends Chat {
     cb;
+    photosCb;
     config;
     constructor(config) {
         super(config);
@@ -53,15 +82,58 @@ class DSChat extends Chat {
         this.config.Bot.sendMessage(message,this.config.group_id);
     }
 
+    sendMessageWithPhotos(message,attachment) {
+        super.sendMessageWithPhotos(message,arguments);
+        this.config.Bot.sendMessageWithPhotos(message,attachment,this.config.group_id);
+    }
+
     setMessageCallBack(cb) {
         super.setMessageCallBack(cb);
         this.cb = cb;
+    }
+
+    setPhotosMessageCallBack(mediaCb) {
+        super.setPhotosMessageCallBack(mediaCb);
+        this.mediaCb = mediaCb;
     }
 
     onMessage(message) {
         super.onMessage(message);
         if(this.cb) {
             this.cb(message.content,{name:message.author.username});
+        }
+    }
+
+    onPhotos(message) {
+
+        function downloadFile(urls,files,folder,message,mediaCb) {
+            let uri = urls.shift();
+            if(uri === undefined) {
+                let text = message.content ? "" : message.content;
+                mediaCb(text,{name:message.author.username},files);
+            } else {
+                let pathToFile = path.join(folder,decodeURIComponent(path.basename(url.parse(uri).pathname)));
+                let file = fs.createWriteStream(pathToFile);
+                https.get(uri,function (response) {
+                    response.pipe(file);
+                    response.on("end", () => {
+                        let object = {"file":pathToFile,"url":uri};
+                        files.push(object);
+                        downloadFile(urls,files,folder,message,mediaCb);
+                    });
+                });
+            }
+        }
+
+        super.onPhotos(message);
+        if(this.mediaCb) {
+            let urls = [];
+            let files = [];
+            let folder = temp.mkdirSync("CrossPlatform-DS");
+            for (let attachment of message.attachments) {
+                urls.push(attachment[1].url);
+            }
+            downloadFile(urls,files,folder,message,this.mediaCb);
         }
     }
 }

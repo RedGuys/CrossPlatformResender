@@ -6,6 +6,10 @@ class Module {
 
     }
 
+    sendMessageWithAttachment(message, attachment, to) {
+
+    }
+
     getChat(config) {
 
     }

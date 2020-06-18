@@ -10,15 +10,16 @@
   "author": "RedGuyGames",
   "license": "ISC",
   "dependencies": {
+    "discord.js": "12.2.0",
     "fb": "^2.0.0",
     "mysql2": "^2.0.1",
     "node-tamtam-botapi": "^0.1.10-b6",
-    "node-telegram-bot-api": "^0.40.0",
+    "telegraf": "^3.38.0",
     "node-vk-bot-api": "^3.3.3",
     "request": "latest",
     "socks5-https-client": "^1.2.1",
+    "temp": "^0.9.1",
     "uws": "^100.0.1",
-    "viber-bot": "^1.0.14",
-    "discord.js": "latest"
+    "viber-bot": "^1.0.14"
   }
 }
