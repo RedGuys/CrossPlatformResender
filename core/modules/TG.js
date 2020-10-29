@@ -6,7 +6,6 @@ const {Chat} = require("./classes/Chat");
 const TGBotLib = require('node-telegram-bot-api');
 const path = require("path");
 const url = require("url");
-const Proxy = require("../Proxy");
 
 class TG extends Module {
     bot;
