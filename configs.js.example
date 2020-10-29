@@ -1,0 +1,46 @@
+module.exports = {
+
+    VKBot: {
+        token: ""//Токен ВК
+    },
+
+    TGBot: {
+        token: "",/Токен ТГ
+        options: {
+            polling: true
+        }
+    },
+
+    DSBot: {
+        token: ""//Токен ДС
+    },
+
+    MCServer: {
+        token: ""//токен мс сервера(пока не работает)
+    },
+
+    TestServer: {
+        host:"ws://localhost",//Адресс вебсокет сервера
+        name:"test"//имя сервераа в префиксе
+    },
+
+    VKTest: {
+        group_id: //id беседы
+    },
+
+    VKBotTest: {
+        group_id: //id беседы
+    },
+
+    TGBotTest: {
+        group_id: //id беседы
+    },
+
+    DSCommands: {
+        group_id: //id беседы
+    },
+
+    DSHren: {
+        group_id: //id беседы
+    }
+};
