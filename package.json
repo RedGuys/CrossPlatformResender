@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "latest",
+    "bl": ">=1.2.3",
     "botact": "^2.4.2",
     "discord.js": "12.2.0",
     "fb": "^2.0.0",
@@ -24,6 +25,6 @@
     "temp": "^0.9.1",
     "uws": "^100.0.1",
     "viber-bot": "^1.0.14",
-    "bl": ">=1.2.3"
+    "ws": "^7.3.1"
   }
 }
