@@ -1,2 +1,2 @@
-# CrossPlatformBot
+# CrossPlatformResender
 Bot to crossplatform messaging
