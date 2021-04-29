@@ -1,3 +1,4 @@
+// noinspection JSDuplicatedDeclaration
 class Core {
     constructor() {
     }
